@@ -1,4 +1,9 @@
 package com.example.appointmentservice.model.enumation;
 
-public class Status {
+public enum Status {
+    PENDING ,
+    CONFIRMED ,
+    REJECTED ,
+    CANCELLED ,
+    COMPLETED
 }
