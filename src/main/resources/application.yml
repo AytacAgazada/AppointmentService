@@ -1,0 +1,2 @@
+spring.application.name=AppointmentService
+server.port=9197
