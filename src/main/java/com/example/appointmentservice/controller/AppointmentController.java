@@ -2,7 +2,7 @@ package com.example.appointmentservice.controller;
 
 import com.example.appointmentservice.model.dto.AppointmentRequestDto;
 import com.example.appointmentservice.model.dto.AppointmentResponseDto;
-import com.example.appointmentservice.model.enumation.Status;
+import com.example.appointmentservice.model.enumeration.Status;
 import com.example.appointmentservice.service.AppointmentService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -29,7 +29,7 @@ public class AppointmentController {
         return new ResponseEntity<>(createdAppointment, HttpStatus.CREATED);
     }
 
-    @GetMapping
+    @GetMapping("/all")
     public ResponseEntity<List<AppointmentResponseDto>> getAllAppointments() {
         log.info("AppointmentController.getAllAppointments: Fetching all appointments.");
         List<AppointmentResponseDto> appointments = appointmentService.getAllAppointments();

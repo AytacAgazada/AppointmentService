@@ -1,7 +1,7 @@
 package com.example.appointmentservice.model.dto;
 
 import com.example.appointmentservice.model.entity.Appointment;
-import com.example.appointmentservice.model.enumation.Status;
+import com.example.appointmentservice.model.enumeration.Status;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -27,8 +27,6 @@ public class AppointmentResponseDto {
     private String note;
     private Timestamp createdAt;
     private Timestamp updatedAt;
-
-
 
     public static AppointmentResponseDto fromEntity(Appointment appointment) {
         return AppointmentResponseDto.builder()

@@ -1,5 +1,5 @@
 package com.example.appointmentservice.exception;
-//(Sizdə artıq var idi, randevu vaxtı biznes qaydalarına uyğun gəlmədikdə.)
+//( randevu vaxtı biznes qaydalarına uyğun gəlmədikdə.)
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ResponseStatus;
 

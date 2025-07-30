@@ -1,4 +1,4 @@
-package com.example.appointmentservice.model.enumation;
+package com.example.appointmentservice.model.enumeration;
 
 public enum Status {
     PENDING ,

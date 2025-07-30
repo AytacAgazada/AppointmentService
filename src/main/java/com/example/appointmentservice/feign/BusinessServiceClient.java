@@ -1,6 +1,6 @@
 package com.example.appointmentservice.feign;
 
-import com.example.appointmentservice.model.dto.BusinessDto;
+import com.example.appointmentservice.model.dto.businessDto.BusinessDto;
 import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -10,9 +10,9 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface BusinessServiceClient {
 
     @GetMapping("/api/businesses/{id}/exists")
-    ResponseEntity<Boolean> doesBusinessExistById(@PathVariable("id") Long id);
+    ResponseEntity<Boolean> doesBusinessExistById(@PathVariable Long id);
 
 
     @GetMapping("/api/businesses/{id}")
-    ResponseEntity<BusinessDto> getBusinessById(@PathVariable("id") Long id);
+    ResponseEntity<BusinessDto> getBusinessById(@PathVariable Long id);
 }

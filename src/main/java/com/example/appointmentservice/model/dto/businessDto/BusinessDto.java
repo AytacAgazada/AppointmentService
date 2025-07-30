@@ -1,4 +1,4 @@
-package com.example.appointmentservice.model.dto;
+package com.example.appointmentservice.model.dto.businessDto;
 
 import lombok.*;
 

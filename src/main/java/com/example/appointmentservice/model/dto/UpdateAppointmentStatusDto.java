@@ -1,6 +1,6 @@
 package com.example.appointmentservice.model.dto;
 
-import com.example.appointmentservice.model.enumation.Status;
+import com.example.appointmentservice.model.enumeration.Status;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;

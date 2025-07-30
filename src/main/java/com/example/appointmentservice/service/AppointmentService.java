@@ -7,9 +7,9 @@ import com.example.appointmentservice.feign.BusinessServiceClient;
 import com.example.appointmentservice.feign.CustomerServiceClient;
 import com.example.appointmentservice.model.dto.AppointmentRequestDto;
 import com.example.appointmentservice.model.dto.AppointmentResponseDto;
-import com.example.appointmentservice.model.dto.BusinessDto;
+import com.example.appointmentservice.model.dto.businessDto.BusinessDto;
 import com.example.appointmentservice.model.entity.Appointment;
-import com.example.appointmentservice.model.enumation.Status;
+import com.example.appointmentservice.model.enumeration.Status;
 import com.example.appointmentservice.repository.AppointmentRepository;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 
 // Bu anotasiya IntelliJ IDEA-nın Feign clientlərinin avtomatik inyeksiyasını tanımaması səbəbindən yaranan xəbərdarlığı susdurur.
 // Kodun işləməsinə təsir etmir, sadəcə IDE-nin bir xəbərdarlığıdır.
-@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+//@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Service
 @RequiredArgsConstructor
 @Slf4j
@@ -37,9 +37,9 @@ public class AppointmentService {
     public AppointmentResponseDto createAppointment(AppointmentResponseDto appointmentRequestDto) {
         log.info("AppointmentService.createAppointment: Request received for customerId: {} and businessId: {}", appointmentRequestDto.getCustomerId(), appointmentRequestDto.getBusinessId());
 
-        // 1. Müştərinin mövcudluğunu yoxla (Auth Service-dən gələn müştəri ID-si əsasında)
+        // 1. Müştərinin mövcudluğunu yoxla (Customer Service-dən gələn müştəri ID-si əsasında)
         try {
-            ResponseEntity<Boolean> customerExistsResponse = customerServiceClient.doesCustomerExistByAuthUserId(appointmentRequestDto.getCustomerId());
+            ResponseEntity<Boolean> customerExistsResponse = customerServiceClient.doesCustomerExistByCustomerId(appointmentRequestDto.getCustomerId());
             if (customerExistsResponse == null || !customerExistsResponse.getStatusCode().is2xxSuccessful() || !Boolean.TRUE.equals(customerExistsResponse.getBody())) {
                 log.warn("Customer not found for Auth User ID: {}", appointmentRequestDto.getCustomerId());
                 throw new ResourceNotFoundException("Customer not found with ID: " + appointmentRequestDto.getCustomerId());
@@ -53,7 +53,6 @@ public class AppointmentService {
         }
 
         // 2. Biznesin mövcudluğunu yoxla (biznes ID əsasında) və detallarını al
-        // BusinessDto biznesin digər detallarını almaq üçün hələ də lazımdır, baxmayaraq ki, iş saatları istifadə olunmayacaq.
         BusinessDto businessDetails;
         try {
             // Əvvəlcə biznesin mövcudluğunu yoxlayın
@@ -80,7 +79,6 @@ public class AppointmentService {
         }
 
         // 3. Randevu vaxtının artıq tutulub-tutulmadığını yoxla
-        // Bu yoxlama AppointmentRepository-dəki `existsByBusinessIdAndAppointmentDateAndAppointmentTime` metodu ilə aparılır.
         if (appointmentRepository.existsByBusinessIdAndAppointmentDateAndAppointmentTime(
                 appointmentRequestDto.getBusinessId(),
                 appointmentRequestDto.getAppointmentDate(),

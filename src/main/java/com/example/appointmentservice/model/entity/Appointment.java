@@ -1,6 +1,6 @@
 package com.example.appointmentservice.model.entity;
 
-import com.example.appointmentservice.model.enumation.Status;
+import com.example.appointmentservice.model.enumeration.Status;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +14,7 @@ import java.sql.Timestamp;
 @Entity
 @NoArgsConstructor
 @AllArgsConstructor
+@Table(name = "appointments")
 @Builder
 @Data
 public class Appointment {
@@ -21,19 +22,15 @@ public class Appointment {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Randevunu sifariş edən müştərinin ID-si
     @Column(nullable = false)
     private Long customerId;
 
-    // Randevunun aid olduğu biznesin ID-si
     @Column(nullable = false)
     private Long businessId;
 
-    // Tarix üçün LocalDate istifadə olunur
     @Column(nullable = false)
     private LocalDate appointmentDate;
 
-    // Vaxt üçün LocalTime istifadə olunur
     @Column(nullable = false)
     private LocalTime appointmentTime;
 

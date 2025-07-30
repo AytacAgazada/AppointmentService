@@ -9,5 +9,5 @@ import org.springframework.web.bind.annotation.PathVariable;
 public interface CustomerServiceClient {
 
     @GetMapping("/api/customers/exists/{id}")
-    ResponseEntity<Boolean> doesCustomerExistByAuthUserId(@PathVariable Long id);
+    ResponseEntity<Boolean> doesCustomerExistByCustomerId(@PathVariable Long id);
 }
