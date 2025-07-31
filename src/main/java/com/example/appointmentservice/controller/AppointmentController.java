@@ -11,6 +11,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -45,31 +46,45 @@ public class AppointmentController {
         return ResponseEntity.ok(appointment);
     }
 
+    // DƏYİŞİKLİK: List qaytarır
     @GetMapping("/customer/{customerId}")
-    public ResponseEntity<AppointmentResponseDto> getAppointmentByCustomerId(@PathVariable Long customerId) {
-        log.info("AppointmentController.getAppointmentByCustomerId: Fetching appointment for customerId: {}", customerId);
-        AppointmentResponseDto appointment = appointmentService.getAppointmentByCustomerId(customerId);
-        log.info("Appointment for customerId: {} fetched successfully.", customerId);
-        return ResponseEntity.ok(appointment);
+    public ResponseEntity<List<AppointmentResponseDto>> getAppointmentByCustomerId(@PathVariable Long customerId) {
+        log.info("AppointmentController.getAppointmentByCustomerId: Fetching appointments for customerId: {}", customerId);
+        List<AppointmentResponseDto> appointments = appointmentService.getAppointmentByCustomerId(customerId); // <-- List qaytarır
+        log.info("Fetched {} appointments for customerId: {}.", appointments.size(), customerId);
+        return ResponseEntity.ok(appointments);
     }
 
+    // DƏYİŞİKLİK: List qaytarır
     @GetMapping("/business/{businessId}")
-    public ResponseEntity<AppointmentResponseDto> getAppointmentByBusinessId(@PathVariable Long businessId) {
-        log.info("AppointmentController.getAppointmentByBusinessId: Fetching appointment for businessId: {}", businessId);
-        AppointmentResponseDto appointment = appointmentService.getAppointmentByBusinessId(businessId);
-        log.info("Appointment for businessId: {} fetched successfully.", businessId);
-        return ResponseEntity.ok(appointment);
+    public ResponseEntity<List<AppointmentResponseDto>> getAppointmentByBusinessId(@PathVariable Long businessId) {
+        log.info("AppointmentController.getAppointmentByBusinessId: Fetching appointments for businessId: {}", businessId);
+        List<AppointmentResponseDto> appointments = appointmentService.getAppointmentByBusinessId(businessId); // <-- List qaytarır
+        log.info("Fetched {} appointments for businessId: {}.", appointments.size(), businessId);
+        return ResponseEntity.ok(appointments);
     }
 
+    // DƏYİŞİKLİK: List qaytarır
     @GetMapping("/customer/{customerId}/business/{businessId}")
-    public ResponseEntity<AppointmentResponseDto> getAppointmentByCustomerIdAndBusinessId(
+    public ResponseEntity<List<AppointmentResponseDto>> getAppointmentByCustomerIdAndBusinessId(
             @PathVariable Long customerId,
             @PathVariable Long businessId) {
-        log.info("AppointmentController.getAppointmentByCustomerIdAndBusinessId: Fetching appointment for customerId: {} and businessId: {}", customerId, businessId);
-        AppointmentResponseDto appointment = appointmentService.getAppointmentByCustomerIdAndBusinessId(customerId, businessId);
-        log.info("Appointment for customerId: {} and businessId: {} fetched successfully.", customerId, businessId);
-        return ResponseEntity.ok(appointment);
+        log.info("AppointmentController.getAppointmentByCustomerIdAndBusinessId: Fetching appointments for customerId: {} and businessId: {}", customerId, businessId);
+        List<AppointmentResponseDto> appointments = appointmentService.getAppointmentByCustomerIdAndBusinessId(customerId, businessId); // <-- List qaytarır
+        log.info("Fetched {} appointments for customerId: {} and businessId: {}.", appointments.size(), customerId, businessId);
+        return ResponseEntity.ok(appointments);
     }
+
+    // DƏYİŞİKLİK: Yeni endpoint əlavə edildi (tarixə görə bütün randevuları qaytarmaq üçün)
+    @GetMapping("/date/{appointmentDate}")
+    public ResponseEntity<List<AppointmentResponseDto>> getAppointmentByDate(@PathVariable String appointmentDate) {
+        log.info("AppointmentController.getAppointmentByDate: Fetching appointments for date: {}", appointmentDate);
+        LocalDate date = LocalDate.parse(appointmentDate); // String-dən LocalDate-ə çevir
+        List<AppointmentResponseDto> appointments = appointmentService.getAppointmentByDate(date);
+        log.info("Fetched {} appointments for date: {}.", appointments.size(), appointmentDate);
+        return ResponseEntity.ok(appointments);
+    }
+
 
     @PutMapping("/{id}")
     public ResponseEntity<AppointmentResponseDto> updateAppointment(
@@ -99,12 +114,11 @@ public class AppointmentController {
         return ResponseEntity.noContent().build();
     }
 
-    @DeleteMapping("/deleteAppointment")
-    public ResponseEntity<Void> deleteAppointment(){
-        log.info("AppointmentController.deleteAppointment: Request to delete all appointments.");
-        appointmentService.deleteAppointment();
+    @DeleteMapping("/deleteAppointment") // Metodun adı düzəldildi
+    public ResponseEntity<Void> deleteAllAppointments(){
+        log.info("AppointmentController.deleteAllAppointments: Request to delete all appointments.");
+        appointmentService.deleteAllAppointments();
         log.info("All appointments deleted successfully.");
         return ResponseEntity.noContent().build();
     }
-
 }

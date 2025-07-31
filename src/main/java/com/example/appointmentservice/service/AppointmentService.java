@@ -22,8 +22,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 
-// Bu anotasiya IntelliJ IDEA-nın Feign clientlərinin avtomatik inyeksiyasını tanımaması səbəbindən yaranan xəbərdarlığı susdurur.
-// Kodun işləməsinə təsir etmir, sadəcə IDE-nin bir xəbərdarlığıdır.
 //@SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
 @Service
 @RequiredArgsConstructor
@@ -122,40 +120,58 @@ public class AppointmentService {
         return AppointmentResponseDto.fromEntity(appointment);
     }
 
-    public AppointmentResponseDto getAppointmentByCustomerId(Long customerId) {
+    // DƏYİŞİKLİK: List qaytarır
+    public List<AppointmentResponseDto> getAppointmentByCustomerId(Long customerId) {
         log.info("AppointmentService.getAppointmentByCustomerId: Request received for customerId: {}", customerId);
-        Appointment appointment = appointmentRepository.findByCustomerId(customerId)
-                .orElseThrow(() -> new ResourceNotFoundException("No appointment found for customer ID: " + customerId));
-        return AppointmentResponseDto.fromEntity(appointment);
+        List<Appointment> appointments = appointmentRepository.findAllByCustomerId(customerId); // <-- findAllByCustomerId istifadə edildi
+        if (appointments.isEmpty()) {
+            throw new ResourceNotFoundException("No appointments found for customer ID: " + customerId);
+        }
+        return appointments.stream()
+                .map(AppointmentResponseDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    public AppointmentResponseDto getAppointmentByBusinessId(Long businessId) {
+    // DƏYİŞİKLİK: List qaytarır
+    public List<AppointmentResponseDto> getAppointmentByBusinessId(Long businessId) {
         log.info("AppointmentService.getAppointmentByBusinessId: Request received for businessId: {}", businessId);
-        Appointment appointment = appointmentRepository.findByBusinessId(businessId)
-                .orElseThrow(() -> new ResourceNotFoundException("No appointment found for business ID: " + businessId));
-        return AppointmentResponseDto.fromEntity(appointment);
+        List<Appointment> appointments = appointmentRepository.findAllByBusinessId(businessId); // <-- findAllByBusinessId istifadə edildi
+        if (appointments.isEmpty()) {
+            throw new ResourceNotFoundException("No appointments found for business ID: " + businessId);
+        }
+        return appointments.stream()
+                .map(AppointmentResponseDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    public AppointmentResponseDto getAppointmentByDate(LocalDate appointmentDate) {
+    // DƏYİŞİKLİK: List qaytarır
+    public List<AppointmentResponseDto> getAppointmentByDate(LocalDate appointmentDate) {
         log.info("AppointmentService.getAppointmentByDate: Request received for date: {}", appointmentDate);
-        Appointment appointment = appointmentRepository.findByAppointmentDate(appointmentDate)
-                .orElseThrow(() -> new ResourceNotFoundException("No appointment found for date: " + appointmentDate));
-        return AppointmentResponseDto.fromEntity(appointment);
+        List<Appointment> appointments = appointmentRepository.findAllByAppointmentDate(appointmentDate); // <-- findAllByAppointmentDate istifadə edildi
+        if (appointments.isEmpty()) {
+            throw new ResourceNotFoundException("No appointments found for date: " + appointmentDate);
+        }
+        return appointments.stream()
+                .map(AppointmentResponseDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
-    public AppointmentResponseDto getAppointmentByCustomerIdAndBusinessId(Long customerId, Long businessId) {
+    // DƏYİŞİKLİK: List qaytarır
+    public List<AppointmentResponseDto> getAppointmentByCustomerIdAndBusinessId(Long customerId, Long businessId) {
         log.info("AppointmentService.getAppointmentByCustomerIdAndBusinessId: Request received for customerId: {} and businessId: {}", customerId, businessId);
-        Appointment appointment = appointmentRepository.findByCustomerIdAndBusinessId(customerId, businessId)
-                .orElseThrow(() -> new ResourceNotFoundException("Appointment not found for customer ID: " + customerId + " and business ID: " + businessId));
-        return AppointmentResponseDto.fromEntity(appointment);
+        List<Appointment> appointments = appointmentRepository.findAllByCustomerIdAndBusinessId(customerId, businessId); // <-- findAllByCustomerIdAndBusinessId istifadə edildi
+        if (appointments.isEmpty()) {
+            throw new ResourceNotFoundException("Appointment not found for customer ID: " + customerId + " and business ID: " + businessId);
+        }
+        return appointments.stream()
+                .map(AppointmentResponseDto::fromEntity)
+                .collect(Collectors.toList());
     }
 
     public List<AppointmentResponseDto> getAllAppointments() {
         log.info("AppointmentService.getAllAppointments: Fetching all appointments.");
         List<Appointment> appointments = appointmentRepository.findAll();
         if (appointments.isEmpty()) {
-            // Əgər heç bir randevu tapılmazsa boş bir siyahı qaytarılır, ResourceNotFoundException atılmır.
-            // Çünki "bütün" randevuların olmaması bir xəta deyil, sadəcə boş bir nəticədir.
             log.info("No appointments found in the system.");
         }
         return appointments.stream()
@@ -166,11 +182,9 @@ public class AppointmentService {
     public AppointmentResponseDto updateAppointment(Long appointmentId, AppointmentRequestDto updatedAppointmentDto) {
         log.info("AppointmentService.updateAppointment: Request to update appointment ID: {} with data: {}", appointmentId, updatedAppointmentDto);
 
-        // Randevunun mövcudluğunu yoxla
         Appointment existingAppointment = appointmentRepository.findById(appointmentId)
                 .orElseThrow(() -> new ResourceNotFoundException("Appointment not found with ID: " + appointmentId));
 
-        // Əgər vaxt və ya tarix dəyişibsə, yeni vaxtın tutulub-tutulmadığını yoxla (cari randevunun özünü nəzərə almadan)
         if (!existingAppointment.getAppointmentDate().equals(updatedAppointmentDto.getAppointmentDate()) ||
                 !existingAppointment.getAppointmentTime().equals(updatedAppointmentDto.getAppointmentTime())) {
 
@@ -184,7 +198,6 @@ public class AppointmentService {
             }
         }
 
-        // Yeniləməni tətbiq et
         existingAppointment.setCustomerId(updatedAppointmentDto.getCustomerId());
         existingAppointment.setBusinessId(updatedAppointmentDto.getBusinessId());
         existingAppointment.setAppointmentDate(updatedAppointmentDto.getAppointmentDate());
@@ -218,10 +231,9 @@ public class AppointmentService {
         log.info("Appointment ID: {} deleted successfully.", appointmentId);
     }
 
-    public void deleteAppointment(){
-        log.info("AppointmentService.deleteAppointment: Request to delete all appointments.");
+    public void deleteAllAppointments(){ // Metodun adı düzəldildi
+        log.info("AppointmentService.deleteAllAppointments: Request to delete all appointments.");
         appointmentRepository.deleteAll();
         log.info("All appointments deleted successfully.");
     }
-
 }
