@@ -75,7 +75,7 @@ public class AppointmentController {
         return ResponseEntity.ok(appointments);
     }
 
-    // DƏYİŞİKLİK: Yeni endpoint əlavə edildi (tarixə görə bütün randevuları qaytarmaq üçün)
+    // (tarixə görə bütün randevuları qaytarmaq üçün)
     @GetMapping("/date/{appointmentDate}")
     public ResponseEntity<List<AppointmentResponseDto>> getAppointmentByDate(@PathVariable String appointmentDate) {
         log.info("AppointmentController.getAppointmentByDate: Fetching appointments for date: {}", appointmentDate);
