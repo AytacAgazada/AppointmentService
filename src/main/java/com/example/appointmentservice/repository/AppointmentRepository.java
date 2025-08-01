@@ -12,19 +12,19 @@ import java.util.Optional;
 @Repository
 public interface AppointmentRepository extends JpaRepository<Appointment, Long> {
 
-    // Artıq tək nəticə deyil, bir müştəriyə aid bütün randevuları qaytarır
-    List<Appointment> findAllByCustomerId(Long customerId); // <-- DƏYİŞİKLİK BURADADIR
+    //  bir müştəriyə aid bütün randevuları qaytarır
+    List<Appointment> findAllByCustomerId(Long customerId);
 
     // Biznesə aid bütün randevuları qaytarır
-    List<Appointment> findAllByBusinessId(Long businessId); // <-- Bu da List olmalıdır
+    List<Appointment> findAllByBusinessId(Long businessId);
 
     Optional<Appointment> findByBusinessIdAndAppointmentDateAndAppointmentTime(Long businessId, LocalDate appointmentDate, LocalTime appointmentTime);
 
     // Bir tarixə aid bütün randevuları qaytarır
-    List<Appointment> findAllByAppointmentDate(LocalDate appointmentDate); // <-- Bu da List olmalıdır
+    List<Appointment> findAllByAppointmentDate(LocalDate appointmentDate);
 
     // Müştəri və biznesə aid bütün randevuları qaytarır (əgər birdən çox ola bilərsə)
-    List<Appointment> findAllByCustomerIdAndBusinessId(Long customerId, Long businessId); // <-- Bu da List olmalıdır
+    List<Appointment> findAllByCustomerIdAndBusinessId(Long customerId, Long businessId);
 
     boolean existsByBusinessIdAndAppointmentDateAndAppointmentTime(Long businessId, LocalDate appointmentDate, LocalTime appointmentTime);
 }
